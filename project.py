@@ -1,31 +1,34 @@
 import itertools
+import sys
 
 def main():
     try:
-        filename = input()
-        f = open(filename, "r")
-        k = int(f.readline())
+        f = sys.stdin.readlines()
+        k = int(f.pop(0).strip("\n"))
         if k < 1:
-            return "NO"
-        s = f.readline().strip("\n")
+            print("NO", end ="")
+            return
+        s = f.pop(0).strip("\n")
         t = []
         tUnique = []
         for i in range(0, k):
-            ti = f.readline().strip("\n")
+            ti = f.pop(0).strip("\n")
             t.append(ti)
             tUnique.extend(list(ti))
         tUnique = set(filter(lambda x: x.isupper(), tUnique))
         t = list(set(t))
-        lines = f.readlines()
+        lines = [x.strip("\n") for x in f]
         y = {}
         Y = []
+        notUsed = {}
         count = 0
         for line in lines:
             count += 1
             upper = line.split(":")[0]
-            if upper not in tUnique:
-                continue
             lower = line.split(":")[1].strip("\n").split(",")
+            if upper not in tUnique:
+                notUsed[upper] = lower[0]
+                continue
             elemToRemove = []
             for l in lower:
                 if l not in s:
@@ -34,7 +37,8 @@ def main():
             y[upper] = lower
             Y.append(upper)
             if count > 26:
-                return "NO"
+                print("NO", end ="")
+                return
             
         replacement = {}
         isCorrect = False
@@ -54,16 +58,13 @@ def main():
                     isCorrect = False
                     break
             if isCorrect:
-                answer = []
                 for key, value in replacement.items():
-                    answer.append(key + ":" + value + "\n")
-                    # print(key + ":" + value)
-                # print(answer)
-                return answer
-        # print("NO")
-        return "NO"
+                    print(key + ":" + value)
+                for key, value in notUsed.items():
+                    print(key + ":" + value)
+                return
+        print("NO", end ="")
     except Exception as error:
-        # print(error)
-        return "NO"
+        print("NO", end ="")
 
 main()
