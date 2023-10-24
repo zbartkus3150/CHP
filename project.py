@@ -17,6 +17,14 @@ def main():
             tUnique.extend(list(ti))
         tUnique = set(filter(lambda x: x.isupper(), tUnique))
         t = list(set(t))
+        subs = []
+        for ti in t:
+            for tj in t:
+                if ti == tj:
+                    continue
+                if ti in tj:
+                    subs.append(ti)
+        t = [elem for elem in t if elem not in subs]
         lines = [x.strip("\n") for x in f]
         y = {}
         Y = []
@@ -24,6 +32,9 @@ def main():
         count = 0
         for line in lines:
             count += 1
+            if count > 26:
+                print("NO", end ="")
+                return
             upper = line.split(":")[0]
             lower = line.split(":")[1].strip("\n").split(",")
             if upper not in tUnique:
@@ -33,12 +44,10 @@ def main():
             for l in lower:
                 if l not in s:
                     elemToRemove.append(l)
-            lower = [elem for elem in lower if elem not in elemToRemove]
+            lower = list(set([elem for elem in lower if elem not in elemToRemove]))
+            # lower = [elem for elem in lower if elem not in elemToRemove]
             y[upper] = lower
             Y.append(upper)
-            if count > 26:
-                print("NO", end ="")
-                return
             
         replacement = {}
         isCorrect = False
@@ -47,13 +56,9 @@ def main():
             replacement = {}
             for i in range(len(elem)):
                 replacement[Y[i]] = elem[i]
+            table = str.maketrans(replacement)
             for sub in t:
-                replaced = ""
-                for letter in sub:
-                    if letter in Y:
-                        replaced += replacement[letter]
-                    else:
-                        replaced += letter
+                replaced = sub.translate(table)
                 if replaced not in s:
                     isCorrect = False
                     break
