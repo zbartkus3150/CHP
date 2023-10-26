@@ -5,9 +5,6 @@ def main():
     try:
         f = sys.stdin.readlines()
         k = int(f.pop(0).strip("\n"))
-        if k < 1:
-            print("NO", end ="")
-            return
         s = f.pop(0).strip("\n")
         t = []
         tUnique = []
@@ -37,6 +34,10 @@ def main():
                 return
             upper = line.split(":")[0]
             lower = line.split(":")[1].strip("\n").split(",")
+            for l in lower:
+                if not l.isalpha() and l != '':
+                    print("NO", end ="")
+                    return
             if upper not in tUnique:
                 notUsed[upper] = lower[0]
                 continue
@@ -45,7 +46,6 @@ def main():
                 if l not in s:
                     elemToRemove.append(l)
             lower = list(set([elem for elem in lower if elem not in elemToRemove]))
-            # lower = [elem for elem in lower if elem not in elemToRemove]
             y[upper] = lower
             Y.append(upper)
             
